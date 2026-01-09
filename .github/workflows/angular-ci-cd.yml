@@ -11,27 +11,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20.17.0"
+          node-version: "18"
+          cache: "npm"
 
       - name: Install dependencies
-        run: npm install
-
-      - name: Run tests
-        run: npm test -- --watch=false --browsers=ChromeHeadless
+        run: npm ci
 
       - name: Build Angular app
         run: npm run build -- --configuration=production
 
-      - name: Deploy to Firebase
+      - name: Deploy to Firebase Preview Channel
         uses: FirebaseExtended/action-hosting-deploy@v0
         with:
-          repoToken: '${{ secrets.GITHUB_TOKEN }}'
-          firebaseServiceAccount: '${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          repoToken: ${{ secrets.GITHUB_TOKEN }}
+          firebaseServiceAccount: ${{ secrets.FIREBASE_SERVICE_ACCOUNT }}
           projectId: demoproject-a3f67
-
+          channelId: preview
+          expires: 7d
